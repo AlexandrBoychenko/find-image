@@ -1,0 +1,33 @@
+/*Reset*/
+html, body, div, section, article, p, blockquote, ul, li{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Roboto;
+}
+
+/*Fonts*/
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+a {
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    color: #00adef;
+}
+
+.wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -50px;
+    border: 2px solid rgba(7, 4, 16, 0.19);
+}
+
+.cell {
+    width: 5rem;
+    height: 5rem;
+    background: cornsilk;
+    border: 1px solid #00adef;
+}
