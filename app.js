@@ -1,6 +1,117 @@
-let cells = document.querySelectorAll('.cell');
-let cellWidth = getComputedStyle(cells[0]).getPropertyValue('width');
-let field = document.querySelector('.wrapper');
+class Field {
+    constructor() {
+        this.field = document.querySelector('.wrapper');
+        this.setField();
+    };
 
-let cellNumbers = cells.length / 2;
-field.setAttribute('style', `width: ${parseInt(cellWidth.replace('px', '')) * cellNumbers}px`);
+    setField() {
+        let fieldDimensions = this.getDimensions();
+        fieldDimensions.then((object) => {
+            this.renderField(object.width, object.height);
+            this.setFieldWidth(object.width);
+        });
+    }
+
+    getDimensions() {
+        let xhr = new XMLHttpRequest();
+
+        xhr.open('GET', 'https://kde.link/test/get_field_size.php', true);
+        xhr.send();
+
+
+        return new Promise ((res, rej) => {
+            xhr.onreadystatechange = function() {
+                if (xhr.status !== 200) {
+                    res(this.setInitialField());
+                } else {
+                    res(JSON.parse(xhr.responseText));
+                }
+
+            }.call(this);
+        })
+    }
+
+    setInitialField() {
+        let minWidth = 2;
+        let maxWidth = 8;
+
+        let dimensionsDelta = maxWidth - minWidth;
+        let randomStep = 10 / dimensionsDelta;
+        
+        return this.getCorrectRandom(minWidth, maxWidth);
+    }
+
+    getCorrectRandom(minWidth, maxWidth) {
+        let fieldWidth = this.getDecRandom(minWidth, maxWidth);
+        let fieldHeight = this.getDecRandom(minWidth, maxWidth);
+        if (fieldWidth * fieldHeight % 2) {
+            return this.getCorrectRandom(minWidth, maxWidth)
+        } else {
+            return {
+                width: fieldWidth,
+                height: fieldHeight
+            }
+        }
+    }
+
+
+    setFieldWidth(widthCells) {
+        let cell = document.querySelector('.cell');
+
+        let cellWidth = getComputedStyle(cell).width.replace('px', '');
+        let fieldBorder = getComputedStyle(this.field).border;
+        let calcFieldBorder = parseInt(fieldBorder.substring(0, fieldBorder.indexOf('px'))) * 2;
+
+        let calculateCellWidth = parseInt(cellWidth) * widthCells + calcFieldBorder;
+        this.field.setAttribute('style', `width: ${calculateCellWidth}px; margin: ${-calculateCellWidth / 2}px`);
+    }
+
+    renderField(width, height) {
+        let imagesLinks = this.getImages();
+        let imagesSwap = this.swapArray(imagesLinks);
+        let cellNumbers = width * height;
+
+        for (let i = 0; i < cellNumbers; i++) {
+            this.createElement(imagesSwap[this.getDecRandom(0, imagesSwap.length - 1)]);
+        }
+    }
+
+    createElement(image) {
+        let div = document.createElement('div');
+        let img = document.createElement('img');
+
+        div.setAttribute('class', 'cell');
+        img.setAttribute('class', 'img');
+        img.setAttribute('src', image);
+
+        div.appendChild(img);
+        this.field.appendChild(div);
+    }
+
+    getImages() {
+        let imagesNumber = 10;
+        let imagesArray = [];
+        let imagesAddress = 'https://kde.link/test/';
+        for (let i = 0; i < imagesNumber; i++) {
+            imagesArray.push(imagesAddress + `${i}.png`);
+        }
+        return imagesArray;
+    }
+
+    swapArray(array) {
+        for (let i = 0; i < array.length; i++) {
+            let randomNumber = this.getDecRandom(0, array.length - 1);
+            let randomElement = array[randomNumber];
+            array[randomNumber] = array[i];
+            array[i] = randomElement;
+        }
+        return array;
+    }
+
+    getDecRandom(min, max) {
+        let randomStep = 10 / (max - min);
+        return min + Math.round(Math.random() * 10 / randomStep);
+    }
+}
+
+new Field();
