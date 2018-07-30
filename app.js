@@ -1,6 +1,6 @@
 class Field {
     constructor() {
-        this.field = document.querySelector('.wrapper');
+        this.field = document.querySelector('.game-field');
         this.setField();
     };
 
@@ -70,10 +70,39 @@ class Field {
         let imagesLinks = this.getImages();
         let imagesSwap = this.swapArray(imagesLinks);
         let cellNumbers = width * height;
+        let presentNumbers = [];
 
-        for (let i = 0; i < cellNumbers; i++) {
-            this.createElement(imagesSwap[this.getDecRandom(0, imagesSwap.length - 1)]);
+        for (let i = 0; i < cellNumbers; i = i + 2) {
+            generateNumber.call(this);
         }
+
+        presentNumbers = this.separateSameImages(presentNumbers, imagesSwap);
+
+        presentNumbers.forEach((index) => {
+            this.createElement(imagesSwap[index]);
+        });
+
+        function generateNumber() {
+            let elementNumber = this.getDecRandom(0, imagesSwap.length - 1);
+            presentNumbers.push(elementNumber, elementNumber);
+        }
+    }
+
+    separateSameImages(imgArray) {
+        for (let i = 0; i < imgArray.length; i++) {
+            for (let j = 0; j < imgArray.length; j++) {
+                if (imgArray[i] === imgArray[i + 1] || imgArray[i] === imgArray[i - 1]) {
+                    if (imgArray[i] !== imgArray[j]
+                    && imgArray[i] !== imgArray[j + 1]
+                    && imgArray[i] !== imgArray[j - 1]) {
+                        let change = imgArray[i];
+                        imgArray[i] = imgArray[j];
+                        imgArray[j] = change;
+                    }
+                }
+            }
+        }
+        return imgArray;
     }
 
     createElement(image) {
