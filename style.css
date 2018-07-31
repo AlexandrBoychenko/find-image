@@ -42,3 +42,11 @@ a {
     height: 100%;
     width: 100%;
 }
+
+[data-background-change="success"] {
+    background: #2e8b57;
+}
+
+[data-background-change="success"] img {
+    display: none;
+}

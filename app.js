@@ -152,13 +152,24 @@ class gameLogic {
     }
 
     addEvent(event) {
-        let imgLink = event.target.firstElementChild;
-        this.previousCell.push(imgLink);
+        let imgDiv = event.currentTarget;
+        let img = event.target;
 
-        event.target.firstElementChild.setAttribute('style', 'display: block;')
-        if (this.previousCell.length === 3) {
-            let firstCell = this.previousCell.shift();
-            firstCell.setAttribute('style', 'display: none;');
+        if (this.previousCell[1] && img.className === 'cell'
+            && imgDiv.firstElementChild.getAttribute('src') === this.previousCell[1].firstElementChild.getAttribute('src')) {
+
+            let firstCell = this.previousCell.pop();
+            firstCell.setAttribute('data-background-change', 'success');
+            firstCell.firstElementChild.setAttribute('style', 'display: none');
+            imgDiv.setAttribute('data-background-change', 'success');
+        } else {
+            this.previousCell.push(imgDiv);
+            imgDiv.firstElementChild.setAttribute('style', 'display: block;');
+
+            if (this.previousCell.length === 3 && img.className !== 'img') {
+                let firstCell = this.previousCell.shift();
+                firstCell.firstElementChild.setAttribute('style', 'display: none;');
+            }
         }
     }
 }
