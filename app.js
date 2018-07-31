@@ -156,27 +156,35 @@ class gameLogic {
         let target = event.target;
 
         if (target.className === 'cell') {
-            if (this.previousCell[1] && currentTarget.firstElementChild.getAttribute('src') === this.previousCell[1].firstElementChild.getAttribute('src')) {
+            if (this.previousCell[1] && this.checkChildSRC(currentTarget, this.previousCell[1])) {
                 this.markTheSame(currentTarget);
             } else {
-                if (this.previousCell.length === 1 && currentTarget.firstElementChild.getAttribute('src') === this.previousCell[0].firstElementChild.getAttribute('src')) {
-                    this.markTheSame(currentTarget)
-                } else {
-                    this.previousCell.push(currentTarget);
-                    currentTarget.firstElementChild.setAttribute('style', 'display: block;');
-                }
-
-                if (this.previousCell.length === 3) {
-                    let firstCell = this.previousCell.shift();
-                    firstCell.firstElementChild.setAttribute('style', 'display: none;');
-                }
+                this.checkNextCell(currentTarget);
+                this.hidePreviousCell();
             }
-        } else {
-            if (currentTarget === this.previousCell[0]) {
-                this.flipItems();
-            }
-
+        } else if (currentTarget === this.previousCell[0]) {
+            this.flipItems();
         }
+    }
+
+    hidePreviousCell() {
+        if (this.previousCell.length === 3) {
+            let firstCell = this.previousCell.shift();
+            firstCell.firstElementChild.setAttribute('style', 'display: none;');
+        }
+    }
+
+    checkNextCell(currentTarget) {
+        if (this.previousCell.length === 1 && this.checkChildSRC(currentTarget, this.previousCell[0])) {
+            this.markTheSame(currentTarget)
+        } else {
+            this.previousCell.push(currentTarget);
+            currentTarget.firstElementChild.setAttribute('style', 'display: block;');
+        }
+    }
+
+    checkChildSRC(currentTarget, sameElement) {
+        return currentTarget.firstElementChild.getAttribute('src') === sameElement.firstElementChild.getAttribute('src');
     }
 
     markTheSame(currentTarget) {
