@@ -152,25 +152,44 @@ class gameLogic {
     }
 
     addEvent(event) {
-        let imgDiv = event.currentTarget;
-        let img = event.target;
+        let currentTarget = event.currentTarget;
+        let target = event.target;
 
-        if (this.previousCell[1] && img.className === 'cell'
-            && imgDiv.firstElementChild.getAttribute('src') === this.previousCell[1].firstElementChild.getAttribute('src')) {
+        if (target.className === 'cell') {
+            if (this.previousCell[1] && currentTarget.firstElementChild.getAttribute('src') === this.previousCell[1].firstElementChild.getAttribute('src')) {
+                this.markTheSame(currentTarget);
+            } else {
+                if (this.previousCell.length === 1 && currentTarget.firstElementChild.getAttribute('src') === this.previousCell[0].firstElementChild.getAttribute('src')) {
+                    this.markTheSame(currentTarget)
+                } else {
+                    this.previousCell.push(currentTarget);
+                    currentTarget.firstElementChild.setAttribute('style', 'display: block;');
+                }
 
-            let firstCell = this.previousCell.pop();
-            firstCell.setAttribute('data-background-change', 'success');
-            firstCell.firstElementChild.setAttribute('style', 'display: none');
-            imgDiv.setAttribute('data-background-change', 'success');
-        } else {
-            this.previousCell.push(imgDiv);
-            imgDiv.firstElementChild.setAttribute('style', 'display: block;');
-
-            if (this.previousCell.length === 3 && img.className !== 'img') {
-                let firstCell = this.previousCell.shift();
-                firstCell.firstElementChild.setAttribute('style', 'display: none;');
+                if (this.previousCell.length === 3) {
+                    let firstCell = this.previousCell.shift();
+                    firstCell.firstElementChild.setAttribute('style', 'display: none;');
+                }
             }
+        } else {
+            if (currentTarget === this.previousCell[0]) {
+                this.flipItems();
+            }
+
         }
+    }
+
+    markTheSame(currentTarget) {
+        let firstCell = this.previousCell.pop();
+        firstCell.setAttribute('data-background-change', 'success');
+        firstCell.firstElementChild.setAttribute('style', 'display: none');
+        currentTarget.setAttribute('data-background-change', 'success');
+    }
+
+    flipItems() {
+        let buffer = this.previousCell[0];
+        this.previousCell[0] = this.previousCell[1];
+        this.previousCell[1] = buffer;
     }
 }
 
