@@ -112,9 +112,12 @@ class Field {
         div.setAttribute('class', 'cell');
         img.setAttribute('class', 'img');
         img.setAttribute('src', image);
+        img.setAttribute('style', 'display: none;');
 
         div.appendChild(img);
         this.field.appendChild(div);
+
+        div.addEventListener('click', game.addEvent.bind(game));
     }
 
     getImages() {
@@ -143,4 +146,22 @@ class Field {
     }
 }
 
+class gameLogic {
+    constructor() {
+        this.previousCell = [];
+    }
+
+    addEvent(event) {
+        let imgLink = event.target.firstElementChild;
+        this.previousCell.push(imgLink);
+
+        event.target.firstElementChild.setAttribute('style', 'display: block;')
+        if (this.previousCell.length === 3) {
+            let firstCell = this.previousCell.shift();
+            firstCell.setAttribute('style', 'display: none;');
+        }
+    }
+}
+
 new Field();
+let game = new gameLogic();
