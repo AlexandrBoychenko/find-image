@@ -24,18 +24,31 @@ a {
     align-items: center;
 }
 
+.field-wrapper {
+    width: 800px;
+    height: 485px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('https://propertynetwork.ae/wp-content/uploads/2018/02/Location-1-800x0-c-center.jpg');
+    z-index: 100;
+}
+
 .game-field {
     border: 2px solid rgba(7, 4, 16, 0.19);
     font-size: 0;
+    z-index: 0;
 }
 
 .cell {
     display: inline-block;
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     background: cornsilk;
     cursor: pointer;
     border: 1px solid #00adef;
+    opacity: 0.7;
 }
 
 .img {
@@ -45,8 +58,29 @@ a {
 
 [data-background-change="success"] {
     background: #2e8b57;
+    opacity: 1;
 }
 
 [data-background-change="success"] img {
+    display: none;
+}
+
+[data-background-change="transparent"] {
+    opacity: 0.7;
+}
+
+[data-background-change="transparent"] img {
+    display: none;
+}
+
+[data-background-change="selected"] {
+    opacity: 1;
+}
+
+[data-background-change="selected"] img {
+    display: block;
+}
+
+[data-background-change="default"] img {
     display: none;
 }

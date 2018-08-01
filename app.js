@@ -18,21 +18,19 @@ class Field {
         xhr.open('GET', 'https://kde.link/test/get_field_size.php', true);
         xhr.send();
 
-
-        return new Promise ((res, rej) => {
+        return new Promise ((res) => {
             xhr.onreadystatechange = function() {
                 if (xhr.status !== 200) {
                     res(this.setInitialField());
                 } else {
                     res(JSON.parse(xhr.responseText));
                 }
-
             }.call(this);
         })
     }
 
     setInitialField() {
-        let minWidth = 2;
+        let minWidth = 4;
         let maxWidth = 8;
 
         let dimensionsDelta = maxWidth - minWidth;
@@ -109,10 +107,10 @@ class Field {
         let div = document.createElement('div');
         let img = document.createElement('img');
 
-        div.setAttribute('class', 'cell');
         img.setAttribute('class', 'img');
         img.setAttribute('src', image);
-        img.setAttribute('style', 'display: none;');
+        div.setAttribute('class', 'cell');
+        div.setAttribute('data-background-change', 'default');
 
         div.appendChild(img);
         this.field.appendChild(div);
@@ -170,7 +168,7 @@ class gameLogic {
     hidePreviousCell() {
         if (this.previousCell.length === 3) {
             let firstCell = this.previousCell.shift();
-            firstCell.firstElementChild.setAttribute('style', 'display: none;');
+            firstCell.setAttribute('data-background-change', 'transparent');
         }
     }
 
@@ -179,7 +177,7 @@ class gameLogic {
             this.markTheSame(currentTarget)
         } else {
             this.previousCell.push(currentTarget);
-            currentTarget.firstElementChild.setAttribute('style', 'display: block;');
+            currentTarget.setAttribute('data-background-change', 'selected');
         }
     }
 
