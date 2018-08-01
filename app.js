@@ -31,11 +31,9 @@ class Field {
 
     setInitialField() {
         let minWidth = 4;
-        let maxWidth = 8;
+        let maxWidth = 4;
 
         let dimensionsDelta = maxWidth - minWidth;
-        let randomStep = 10 / dimensionsDelta;
-        
         return this.getCorrectRandom(minWidth, maxWidth);
     }
 
@@ -84,6 +82,8 @@ class Field {
             let elementNumber = this.getDecRandom(0, imagesSwap.length - 1);
             presentNumbers.push(elementNumber, elementNumber);
         }
+
+        game.cellsQuantity = presentNumbers.length;
     }
 
     separateSameImages(imgArray) {
@@ -147,6 +147,7 @@ class Field {
 class gameLogic {
     constructor() {
         this.previousCell = [];
+        this.winCells = 0;
     }
 
     addEvent(event) {
@@ -190,6 +191,14 @@ class gameLogic {
         firstCell.setAttribute('data-background-change', 'success');
         firstCell.firstElementChild.setAttribute('style', 'display: none');
         currentTarget.setAttribute('data-background-change', 'success');
+        this.isFinish();
+    }
+
+    isFinish() {
+        this.winCells += 2;
+        if (this.winCells >= this.cellsQuantity) {
+            control.showGameResult();
+        }
     }
 
     flipItems() {
@@ -203,18 +212,58 @@ class gameControl {
     constructor() {
         this.addStartEvent();
         this.gameField = document.querySelector('.game-field');
-        this.contentStart = document.querySelector('.content-start')
+        this.contentStart = document.querySelector('.content-start');
+        this.timer = document.querySelector('.timer');
+        this.scores = document.querySelector('.scores');
+        this.gameResult = document.querySelector('.game-result');
+        this.initialScores = 1001;
+        this.currentScores = 1;
+        this.startDate;
+        this.currentDate;
     }
+
     addStartEvent() {
         let startButton = document.querySelector('.btn-start');
         startButton.addEventListener('click', this.gameStart.bind(this));
     }
+
     gameStart() {
+        this.showGameField();
+
+        this.startDate = new Date();
+        this.timeAndScores = setInterval(() => {
+            this.currentDate = (new Date() - this.startDate) / 1000;
+            this.timer.innerText = `time: ${parseInt(this.currentDate)}`;
+            this.scores.innerText = `scores: ${this.initialScores - this.currentScores}`;
+            this.currentScores++;
+        }, 1000)
+    }
+
+    showGameField() {
         this.gameField.setAttribute('data-display', 'block');
         this.contentStart.setAttribute('data-display', 'none');
+        this.timer.setAttribute('data-display', 'block');
+        this.scores.setAttribute('data-display', 'block');
+    }
+
+    showGameResult() {
+        this.gameField.setAttribute('data-display', 'none');
+        this.timer.setAttribute('data-display', 'none');
+        this.scores.setAttribute('data-display', 'none');
+        this.gameResult.setAttribute('data-display', 'block');
+        this.gameResult.innerText = `Total scores of the game: ${this.initialScores - this.currentScores}`
+        clearInterval(this.timeAndScores);
+        this.showStartButton();
+    }
+
+    showStartButton() {
+        let startButton = document.querySelector('.btn-start');
+        let fieldWrapper = document.querySelector('.field-wrapper');
+        fieldWrapper.appendChild(startButton);
+        startButton.setAttribute('style', 'position: absolute; margin-top: 19%;');
     }
 }
 
 new Field();
-new gameControl();
+let control = new gameControl();
 let game = new gameLogic();

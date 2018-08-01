@@ -43,12 +43,14 @@ a {
     background: #000000ad;
     opacity: 0.8;
     padding: 1rem;
+    /*display: none;*/
 }
 
 .logo {
     position: absolute;
-    right: 2rem;
-    top: 0.5rem;
+    right: 0.5rem;
+    top: 0.8rem;
+    width: 9rem;
 }
 
 .game-title {
@@ -80,6 +82,7 @@ a {
 }
 
 .game-field {
+    position: relative;
     border: 2px solid rgba(7, 4, 16, 0.19);
     font-size: 0;
 }
@@ -97,6 +100,40 @@ a {
 .img {
     height: 100%;
     width: 100%;
+}
+
+.timer {
+    position: absolute;
+    top: 48%;
+    left: 2%;
+    background: black;
+    padding: 5px;
+    border: 1px solid;
+    display: none;
+    width: 8rem;
+    text-align: center;
+}
+
+.scores {
+    position: absolute;
+    top: 48%;
+    left: 82%;
+    background: black;
+    padding: 5px;
+    border: 1px solid;
+    display: none;
+    width: 8rem;
+    text-align: center;
+}
+
+.game-result {
+    margin: auto;
+    display: none;
+    font-size: 4rem;
+    text-align: center;
+    color: #00fa9a;
+    background: black;
+    padding: 5px;
 }
 
 [data-background-change="success"] {
