@@ -199,5 +199,22 @@ class gameLogic {
     }
 }
 
+class gameControl {
+    constructor() {
+        this.addStartEvent();
+        this.gameField = document.querySelector('.game-field');
+        this.contentStart = document.querySelector('.content-start')
+    }
+    addStartEvent() {
+        let startButton = document.querySelector('.btn-start');
+        startButton.addEventListener('click', this.gameStart.bind(this));
+    }
+    gameStart() {
+        this.gameField.setAttribute('data-display', 'block');
+        this.contentStart.setAttribute('data-display', 'none');
+    }
+}
+
 new Field();
+new gameControl();
 let game = new gameLogic();
