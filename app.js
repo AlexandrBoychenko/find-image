@@ -168,6 +168,7 @@ class gameLogic {
         if (target.className === 'cell') {
             if (this.previousCell[1] && this.checkChildSRC(currentTarget, this.previousCell[1])) {
                 this.markTheSame(currentTarget);
+                control.addSound('.check-audio');
             } else {
                 this.checkNextCell(currentTarget);
                 this.hidePreviousCell();
@@ -175,6 +176,7 @@ class gameLogic {
         } else if (currentTarget === this.previousCell[0]) {
             this.flipItems();
         }
+        control.addSound('.tap-audio');
     }
 
     hidePreviousCell() {
@@ -211,6 +213,7 @@ class gameLogic {
         this.winCells += 2;
         if (this.winCells >= this.cellsQuantity) {
             control.showGameResult();
+            control.addSound('.result-audio');
         }
     }
 
@@ -224,7 +227,6 @@ class gameLogic {
 
 class gameControl {
     constructor() {
-        this.addStartEvent();
         this.gameField = document.querySelector('.game-field');
         this.contentStart = document.querySelector('.content-start');
         this.gameInfo = document.querySelector('.game-info');
@@ -232,18 +234,14 @@ class gameControl {
         this.scores = document.querySelector('.scores');
         this.gameResult = document.querySelector('.game-result');
         this.startButton = document.querySelector('.btn-start');
-
-    }
-
-    addStartEvent() {
-        let startButton = document.querySelector('.btn-start');
-        startButton.addEventListener('click', this.gameStart.bind(this));
+        this.startButton.addEventListener('click', this.gameStart.bind(this));
     }
 
     gameStart() {
         //draw and show the game-field, prepare info elements
         new Field();
         this.showGameField();
+        this.addSound('.open-audio');
         this.initialScores = 1000;
         this.currentScores = 1;
 
@@ -268,7 +266,7 @@ class gameControl {
         this.gameField.setAttribute('data-display', 'none');
         this.gameInfo.setAttribute('data-display', 'none');
         this.gameResult.setAttribute('data-display', 'block');
-        this.gameResult.innerText = `Total scores of the game: ${this.initialScores - this.currentScores}`;
+        this.gameResult.innerText = `You win! Total scores of the game: ${this.initialScores - this.currentScores}`;
         this.showStartButton();
         this.clearGameData();
     }
@@ -290,6 +288,11 @@ class gameControl {
         fieldWrapper.appendChild(this.startButton);
         this.startButton.setAttribute('style', 'position: absolute; margin-top: 20%;');
         this.startButton.setAttribute('data-display', 'block');
+    }
+
+    addSound(selector) {
+        let openAudio = document.querySelector(selector);
+        openAudio.play();
     }
 }
 
