@@ -43,7 +43,6 @@ a {
     background: #000000ad;
     opacity: 0.8;
     padding: 1rem;
-    /*display: none;*/
 }
 
 .logo {
@@ -85,6 +84,7 @@ a {
     position: relative;
     border: 2px solid rgba(7, 4, 16, 0.19);
     font-size: 0;
+    z-index: 1;
 }
 
 .cell {
@@ -102,28 +102,28 @@ a {
     width: 100%;
 }
 
-.timer {
+.game-info {
+    display: none;
+    width: 100%;
     position: absolute;
-    top: 48%;
-    left: 2%;
+    z-index: 0;
+}
+
+.timer, .scores{
+    display: inline-block;
     background: black;
     padding: 5px;
     border: 1px solid;
-    display: none;
     width: 8rem;
     text-align: center;
 }
 
+.timer {
+    margin-left: 2%;
+}
+
 .scores {
-    position: absolute;
-    top: 48%;
-    left: 82%;
-    background: black;
-    padding: 5px;
-    border: 1px solid;
-    display: none;
-    width: 8rem;
-    text-align: center;
+    margin-left: 64%;
 }
 
 .game-result {

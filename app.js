@@ -13,6 +13,7 @@ class Field {
     }
 
     getDimensions() {
+        //get JSON data from script, if error get random values from this.setInitialField()
         let xhr = new XMLHttpRequest();
 
         xhr.open('GET', 'https://kde.link/test/get_field_size.php', true);
@@ -30,16 +31,20 @@ class Field {
     }
 
     setInitialField() {
-        let minWidth = 4;
-        let maxWidth = 4;
+        //min and max game field dimensions
+        let minWidth = 3;
+        let maxWidth = 8;
 
         let dimensionsDelta = maxWidth - minWidth;
         return this.getCorrectRandom(minWidth, maxWidth);
     }
 
     getCorrectRandom(minWidth, maxWidth) {
+        //get random numbers in the range from min to max value
         let fieldWidth = this.getDecRandom(minWidth, maxWidth);
         let fieldHeight = this.getDecRandom(minWidth, maxWidth);
+
+        //if multiplication of the field dimensions is'nt even run this method recursively
         if (fieldWidth * fieldHeight % 2) {
             return this.getCorrectRandom(minWidth, maxWidth)
         } else {
@@ -52,14 +57,14 @@ class Field {
 
 
     setFieldWidth(widthCells) {
+        //set game field width style attribute
         let cell = document.querySelector('.cell');
-
         let cellWidth = getComputedStyle(cell).width.replace('px', '');
         let fieldBorder = getComputedStyle(this.field).border;
         let calcFieldBorder = parseInt(fieldBorder.substring(0, fieldBorder.indexOf('px'))) * 2;
 
         let calculateCellWidth = parseInt(cellWidth) * widthCells + calcFieldBorder;
-        this.field.setAttribute('style', `width: ${calculateCellWidth}px; margin: ${-calculateCellWidth / 2}px`);
+        this.field.setAttribute('style', `width: ${calculateCellWidth}px;`);
     }
 
     renderField(width, height) {
@@ -71,22 +76,26 @@ class Field {
         for (let i = 0; i < cellNumbers; i = i + 2) {
             generateNumber.call(this);
         }
+        presentNumbers = this.separateSameImages(presentNumbers);
 
-        presentNumbers = this.separateSameImages(presentNumbers, imagesSwap);
-
+        //use received array to draw cells in the game field
         presentNumbers.forEach((index) => {
             this.createElement(imagesSwap[index]);
         });
 
         function generateNumber() {
+            //get random number and push two the same numbers in array to save even quantity for the elements
             let elementNumber = this.getDecRandom(0, imagesSwap.length - 1);
             presentNumbers.push(elementNumber, elementNumber);
         }
 
+        //get cells quantity value to calculate criteria for game end in the gameLogic object
         game.cellsQuantity = presentNumbers.length;
     }
 
     separateSameImages(imgArray) {
+        //check all numbers in array and their neighbors, if it has 2 the same numbers in a row do exchange it on other
+        //numbers in the array
         for (let i = 0; i < imgArray.length; i++) {
             for (let j = 0; j < imgArray.length; j++) {
                 if (imgArray[i] === imgArray[i + 1] || imgArray[i] === imgArray[i - 1]) {
@@ -119,6 +128,7 @@ class Field {
     }
 
     getImages() {
+        //get array with images address
         let imagesNumber = 10;
         let imagesArray = [];
         let imagesAddress = 'https://kde.link/test/';
@@ -139,6 +149,7 @@ class Field {
     }
 
     getDecRandom(min, max) {
+        //Get random number based on the specified range and step per 10
         let randomStep = 10 / (max - min);
         return min + Math.round(Math.random() * 10 / randomStep);
     }
@@ -154,6 +165,7 @@ class gameLogic {
         let currentTarget = event.currentTarget;
         let target = event.target;
 
+        //check is clicked cell is opened or closed
         if (target.className === 'cell') {
             if (this.previousCell[1] && this.checkChildSRC(currentTarget, this.previousCell[1])) {
                 this.markTheSame(currentTarget);
@@ -187,6 +199,7 @@ class gameLogic {
     }
 
     markTheSame(currentTarget) {
+        //hide the same images in the game-field
         let firstCell = this.previousCell.pop();
         firstCell.setAttribute('data-background-change', 'success');
         firstCell.firstElementChild.setAttribute('style', 'display: none');
@@ -195,6 +208,7 @@ class gameLogic {
     }
 
     isFinish() {
+        //check quantity of the opened cells to end a game
         this.winCells += 2;
         if (this.winCells >= this.cellsQuantity) {
             control.showGameResult();
@@ -202,6 +216,7 @@ class gameLogic {
     }
 
     flipItems() {
+        //flip currentCells values to handle case when opened cell is clicked
         let buffer = this.previousCell[0];
         this.previousCell[0] = this.previousCell[1];
         this.previousCell[1] = buffer;
@@ -213,13 +228,12 @@ class gameControl {
         this.addStartEvent();
         this.gameField = document.querySelector('.game-field');
         this.contentStart = document.querySelector('.content-start');
+        this.gameInfo = document.querySelector('.game-info');
         this.timer = document.querySelector('.timer');
         this.scores = document.querySelector('.scores');
         this.gameResult = document.querySelector('.game-result');
-        this.initialScores = 1001;
-        this.currentScores = 1;
-        this.startDate;
-        this.currentDate;
+        this.startButton = document.querySelector('.btn-start');
+
     }
 
     addStartEvent() {
@@ -228,7 +242,11 @@ class gameControl {
     }
 
     gameStart() {
+        //draw and show the game-field, prepare info elements
+        new Field();
         this.showGameField();
+        this.initialScores = 1000;
+        this.currentScores = 1;
 
         this.startDate = new Date();
         this.timeAndScores = setInterval(() => {
@@ -236,34 +254,45 @@ class gameControl {
             this.timer.innerText = `time: ${parseInt(this.currentDate)}`;
             this.scores.innerText = `scores: ${this.initialScores - this.currentScores}`;
             this.currentScores++;
-        }, 1000)
+        }, 950)
     }
 
     showGameField() {
         this.gameField.setAttribute('data-display', 'block');
         this.contentStart.setAttribute('data-display', 'none');
-        this.timer.setAttribute('data-display', 'block');
-        this.scores.setAttribute('data-display', 'block');
+        this.gameInfo.setAttribute('data-display', 'block');
+        this.gameResult.setAttribute('data-display', 'none');
+        this.startButton.setAttribute('data-display', 'none');
     }
 
     showGameResult() {
         this.gameField.setAttribute('data-display', 'none');
-        this.timer.setAttribute('data-display', 'none');
-        this.scores.setAttribute('data-display', 'none');
+        this.gameInfo.setAttribute('data-display', 'none');
         this.gameResult.setAttribute('data-display', 'block');
-        this.gameResult.innerText = `Total scores of the game: ${this.initialScores - this.currentScores}`
-        clearInterval(this.timeAndScores);
+        this.gameResult.innerText = `Total scores of the game: ${this.initialScores - this.currentScores}`;
         this.showStartButton();
+        this.clearGameData();
+    }
+
+    clearGameData() {
+        let gameCells = document.querySelectorAll('.cell');
+        gameCells.forEach((cell) => {
+            cell.remove();
+        });
+        clearInterval(this.timeAndScores);
+        this.currentScores = 1;
+        game.winCells = 0;
+        this.timer.innerText = `time: 0`;
+        this.scores.innerText = `scores: 1000`;
     }
 
     showStartButton() {
-        let startButton = document.querySelector('.btn-start');
         let fieldWrapper = document.querySelector('.field-wrapper');
-        fieldWrapper.appendChild(startButton);
-        startButton.setAttribute('style', 'position: absolute; margin-top: 19%;');
+        fieldWrapper.appendChild(this.startButton);
+        this.startButton.setAttribute('style', 'position: absolute; margin-top: 20%;');
+        this.startButton.setAttribute('data-display', 'block');
     }
 }
 
-new Field();
 let control = new gameControl();
 let game = new gameLogic();
