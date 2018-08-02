@@ -55,7 +55,6 @@ class Field {
         }
     }
 
-
     setFieldWidth(widthCells) {
         //set game field width style attribute
         let cell = document.querySelector('.cell');
