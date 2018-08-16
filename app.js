@@ -41,8 +41,8 @@ class Field {
 
     getCorrectRandom(minWidth, maxWidth) {
         //get random numbers in the range from min to max value
-        let fieldWidth = this.getDecRandom(minWidth, maxWidth);
-        let fieldHeight = this.getDecRandom(minWidth, maxWidth);
+        let fieldWidth = this.getRandomNumber(minWidth, maxWidth);
+        let fieldHeight = this.getRandomNumber(minWidth, maxWidth);
 
         //if multiplication of the field dimensions is'nt even run this method recursively
         if (fieldWidth * fieldHeight % 2) {
@@ -84,12 +84,12 @@ class Field {
 
         function generateNumber() {
             //get random number and push two the same numbers in array to save even quantity for the elements
-            let elementNumber = this.getDecRandom(0, imagesSwap.length - 1);
+            let elementNumber = this.getRandomNumber(0, imagesSwap.length - 1);
             presentNumbers.push(elementNumber, elementNumber);
         }
 
-        //get cells quantity value to calculate criteria for game end in the gameLogic object
-        game.cellsQuantity = presentNumbers.length;
+        //get cells quantity value to calculate criteria for game end in the GameLogic object
+        Game.cellsQuantity = presentNumbers.length;
     }
 
     separateSameImages(imgArray) {
@@ -123,7 +123,7 @@ class Field {
         div.appendChild(img);
         this.field.appendChild(div);
 
-        div.addEventListener('click', game.addEvent.bind(game));
+        div.addEventListener('click', Game.addEvent.bind(Game));
     }
 
     getImages() {
@@ -139,7 +139,7 @@ class Field {
 
     swapArray(array) {
         for (let i = 0; i < array.length; i++) {
-            let randomNumber = this.getDecRandom(0, array.length - 1);
+            let randomNumber = this.getRandomNumber(0, array.length - 1);
             let randomElement = array[randomNumber];
             array[randomNumber] = array[i];
             array[i] = randomElement;
@@ -147,14 +147,13 @@ class Field {
         return array;
     }
 
-    getDecRandom(min, max) {
-        //Get random number based on the specified range and step per 10
-        let randomStep = 10 / (max - min);
-        return min + Math.round(Math.random() * 10 / randomStep);
+    getRandomNumber(min, max) {
+        //Get random number based on the specified range
+        return Math.floor(Math.random() * (max - min + 1) + min);
     }
 }
 
-class gameLogic {
+class GameLogic {
     constructor() {
         this.previousCell = [];
         this.winCells = 0;
@@ -168,7 +167,7 @@ class gameLogic {
         if (target.className === 'cell') {
             if (this.previousCell[1] && this.checkChildSRC(currentTarget, this.previousCell[1])) {
                 this.markTheSame(currentTarget);
-                control.addSound('.check-audio');
+                Control.addSound('.check-audio');
             } else {
                 this.checkNextCell(currentTarget);
                 this.hidePreviousCell();
@@ -176,7 +175,7 @@ class gameLogic {
         } else if (currentTarget === this.previousCell[0]) {
             this.flipItems();
         }
-        control.addSound('.tap-audio');
+        Control.addSound('.tap-audio');
     }
 
     hidePreviousCell() {
@@ -212,8 +211,8 @@ class gameLogic {
         //check quantity of the opened cells to end a game
         this.winCells += 2;
         if (this.winCells >= this.cellsQuantity) {
-            control.showGameResult();
-            control.addSound('.result-audio');
+            Control.showGameResult();
+            Control.addSound('.result-audio');
         }
     }
 
@@ -225,7 +224,7 @@ class gameLogic {
     }
 }
 
-class gameControl {
+class GameControl {
     constructor() {
         this.gameField = document.querySelector('.game-field');
         this.contentStart = document.querySelector('.content-start');
@@ -278,7 +277,7 @@ class gameControl {
         });
         clearInterval(this.timeAndScores);
         this.currentScores = 1;
-        game.winCells = 0;
+        Game.winCells = 0;
         this.timer.innerText = `time: 0`;
         this.scores.innerText = `scores: 1000`;
     }
@@ -296,5 +295,5 @@ class gameControl {
     }
 }
 
-let control = new gameControl();
-let game = new gameLogic();
+let Control = new GameControl();
+let Game = new GameLogic();
