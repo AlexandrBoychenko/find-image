@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <title>Find the image</title>
     <link rel="stylesheet" href="style.css">
-
+    <script src="app.js" defer></script>
 </head>
 <body>
     <div class="wrapper">
         <div class="field-wrapper">
-            <img src="img/logo.png" alt="R-lab" class="logo">
+            <img src="img/logo.png" alt="R-lab logo" class="logo">
             <div class="content-start">
                 <h3 class="game-title">Find the same 2 images</h3>
                 <p class="instruction">Just click on the same images on the game field until all cells will be disappeared!</p>
@@ -23,6 +23,17 @@
             <p class="game-result">Total scores of the game: 100000</p>
         </div>
     </div>
-    <script src="app.js"></script>
+    <audio class="open-audio">
+        <source src="sound/open.wav" type="audio/wav">
+    </audio>
+    <audio class="tap-audio">
+        <source src="sound/tap.mp3" type="audio/mpeg">
+    </audio>
+    <audio class="check-audio">
+        <source src="sound/ding.mp3" type="audio/mpeg">
+    </audio>
+    <audio class="result-audio">
+        <source src="sound/metroid-toneSFX.mp3" type="audio/mpeg">
+    </audio>
 </body>
 </html>
