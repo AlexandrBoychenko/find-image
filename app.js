@@ -130,9 +130,10 @@ class Field {
         //get array with images address
         let imagesNumber = 10;
         let imagesArray = [];
-        let imagesAddress = 'https://kde.link/test/';
-        for (let i = 0; i < imagesNumber; i++) {
-            imagesArray.push(imagesAddress + `${i}.png`);
+        for (let i = 1; i < imagesNumber; i++) {
+            let imgName = `${i}.png`;
+            i < 10 ?  imgName = 0 + imgName : null;
+            imagesArray.push(`img/` + imgName);
         }
         return imagesArray;
     }
